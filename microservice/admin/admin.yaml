@@ -1,0 +1,33 @@
+# service1/deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admin
+  namespace: microservices
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: admin
+  template:
+    metadata:
+      labels:
+        app: admin
+    spec:
+      containers:
+        - name: admin
+          image: 495599739945.dkr.ecr.us-east-1.amazonaws.com/admin:v1
+          ports:
+            - containerPort: 8080
+          envFrom:
+            - configMapRef:
+                name: admin-config
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "128Mi"
+            limits:
+              cpu: "200m"
+              memory: "256Mi"
+      imagePullSecrets:
+        - name: ecr-registry-secret

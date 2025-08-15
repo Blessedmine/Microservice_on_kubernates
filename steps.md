@@ -66,7 +66,10 @@ This project involves building, containerizing, and deploying **8 microservices*
  - Build images:
    ```sh
    docker build -t <registry>/<service-name>:<tag> .
-   ```  
+   
+   Create ecr
+   aws ecr create-repository --repository-name service-name
+      ```  
  - Push to **AWS ECR** or **Azure ACR**:
    ```sh
    docker push <registry>/<service-name>:<tag>
@@ -93,7 +96,7 @@ You can also follow the command line on the aws if you are using AWS
 2. **Configure `kubectl` Access**
  - For **EKS**:
    ```sh
-   aws eks --region us-east-1 update-kubeconfig --name my-cluster
+    
    ```  
  - For **AKS**:
    ```sh
@@ -149,7 +152,14 @@ You can also follow the command line on the aws if you are using AWS
    ```  
  - Define `ingress.yaml` for routing.
 
----
+# Add the Helm repository (if not already added)
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+
+ kubectl apply -f ingress.yaml
+
+# Install NGINX Ingress Controller in a dedicated namespace
+helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx --namespace ingress-nginx --create-namespace --set controller.service.type=LoadBalancer
 
 ## **Phase 3: Production Features**
 
